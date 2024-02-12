@@ -4,11 +4,11 @@ import { ScheduleAPIService } from './app.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ItemModule } from './item/item.module';
+import { ItemModule } from './public/public.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
 import { ItemDtoPipe } from './pipes/item-dto.pipe';
-import { ItemController } from './item/item.controller';
+import { PrivateItemModule } from './private/private.module';
 
 @Module({
   imports: [
@@ -21,8 +21,9 @@ import { ItemController } from './item/item.controller';
         configService.get('typeorm'),
     }),
     ItemModule,
+    PrivateItemModule,
   ],
-  controllers: [AppController, ItemController],
+  controllers: [AppController],
   providers: [ScheduleAPIService, ItemDtoPipe],
 })
 export class AppModule {}

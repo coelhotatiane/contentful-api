@@ -6,14 +6,15 @@ import { MetadataTag } from 'src/entities/metadata-tag.entity';
 import { Sys } from 'src/entities/sys.entity';
 import { SysLink } from 'src/entities/sys-link.entity';
 import { Item } from 'src/entities/item.entity';
-import { ItemService } from './item.service';
+import { ItemService } from '../services/item.service';
+import { ItemController } from './item.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Tag, Metadata, MetadataTag, Sys, SysLink, Item]),
   ],
   providers: [ItemService],
-  controllers: [],
+  controllers: [ItemController],
   exports: [ItemService],
 })
 export class ItemModule {}

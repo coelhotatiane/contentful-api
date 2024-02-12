@@ -4,7 +4,7 @@ import { Cron } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
 import { Observable, map } from 'rxjs';
 import { ItemDto } from './dto/item.dto';
-import { ItemService } from './item/item.service';
+import { ItemService } from './services/item.service';
 import { ItemDtoPipe } from './pipes/item-dto.pipe';
 import { Item } from './entities/item.entity';
 
