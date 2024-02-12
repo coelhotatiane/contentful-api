@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Param, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UsePipes } from '@nestjs/common';
 import { Item } from 'src/entities/item.entity';
 import { ItemService } from './item.service';
 import { ItemDtoPipe } from 'src/pipes/item-dto.pipe';
+import { FindManyOptions, UpdateResult } from 'typeorm';
+import { FieldsDto } from 'src/dto/fields.dto';
 
 @Controller('users')
 export class ItemController {
@@ -15,7 +17,19 @@ export class ItemController {
 
   @Get('/item/:id')
   getItem(@Param('id') id: string): Promise<Item> {
-    console.log(id);
     return this.itemService.get(id);
+  }
+
+  @Get('/item')
+  search(@Query() query: FieldsDto & Pick<FindManyOptions, 'skip'>): Promise<Item[]> {
+    const skip = query.skip;
+    delete query.skip;
+    return this.itemService.search(query, skip);
+  }
+
+  @Delete('/item/:id')
+  async deleteItem(@Param('id') id: string): Promise<Pick<UpdateResult, 'affected'>> {
+    const result = await this.itemService.softDelete(id);
+    return { affected: result.affected };
   }
 }

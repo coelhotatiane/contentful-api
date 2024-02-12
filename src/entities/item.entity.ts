@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   Index,
   OneToOne,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Sys } from './sys.entity';
 import { Metadata } from './metadata.entity';
@@ -52,4 +53,7 @@ export class Item {
     cascade: ['insert'],
   })
   metadata: Metadata;
+
+  @DeleteDateColumn()
+  deleted_at: Date;
 }

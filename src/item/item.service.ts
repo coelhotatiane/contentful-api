@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QueryFailedError, Repository } from 'typeorm';
+import { FindManyOptions, QueryFailedError, Repository, UpdateResult } from 'typeorm';
 import { Item } from 'src/entities/item.entity';
+import { FieldsDto } from 'src/dto/fields.dto';
 
 @Injectable()
 export class ItemService {
@@ -27,6 +28,14 @@ export class ItemService {
   }
 
   get(id: string): Promise<Item> {
-    return this.itemRepository.findOne({ where: { id } });
+    return this.itemRepository.findOne({ where: { id, deleted_at: null } });
+  }
+
+  search(query: FieldsDto, skip: FindManyOptions['skip']) {
+    return this.itemRepository.find({ where: { deleted_at: null, ...query }, take: 5, skip });
+  }
+
+  softDelete(id: string): Promise<UpdateResult> {
+    return this.itemRepository.softDelete({ id, deleted_at: null });
   }
 }

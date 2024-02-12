@@ -3,11 +3,13 @@ import { createHash } from 'crypto';
 import { ItemDto } from 'src/dto/item.dto';
 import { Item } from 'src/entities/item.entity';
 
+// https://stackoverflow.com/a/61132308
 type DeepPartial<T> = T extends object
   ? {
       [P in keyof T]?: DeepPartial<T[P]>;
     }
   : T;
+
 @Injectable()
 export class ItemDtoPipe implements PipeTransform<ItemDto, DeepPartial<Item>> {
   transform(value: ItemDto): DeepPartial<Item> {
