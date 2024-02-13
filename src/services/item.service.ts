@@ -14,12 +14,17 @@ import {
 import { Item } from 'src/entities/item.entity';
 import { FieldsDto } from 'src/dto/fields.dto';
 
-interface ReportParams {
+export interface ReportParams {
   deleted?: boolean;
   startDate?: Date;
   endDate?: Date;
   minPrice?: number;
   maxPrice?: number;
+}
+
+export interface BrandReport {
+  brand: string;
+  total: string;
 }
 
 @Injectable()
@@ -67,7 +72,7 @@ export class ItemService {
     endDate,
     minPrice,
     maxPrice,
-  }: ReportParams) {
+  }: ReportParams): Promise<number> {
     const deleted_at = deleted ? Not(IsNull()) : null;
     const created_at =
       startDate && endDate
@@ -93,5 +98,14 @@ export class ItemService {
     });
     const total = await this.itemRepository.count({ withDeleted: deleted });
     return (count / total) * 100;
+  }
+
+  async generateReportByBrand(): Promise<BrandReport[]> {
+    const result = await this.itemRepository
+      .createQueryBuilder('item')
+      .select('item.brand, COUNT(*) AS total')
+      .groupBy('item.brand')
+      .execute();
+    return result;
   }
 }

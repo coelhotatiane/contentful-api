@@ -1,6 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ItemService } from '../services/item.service';
-@Controller('report')
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { BrandReport, ItemService } from '../services/item.service';
+import { AuthGuard } from 'src/guards/auth.guard';
+
+@Controller('reports')
+@UseGuards(AuthGuard)
 export class ReportController {
   constructor(private itemService: ItemService) {}
 
@@ -11,7 +14,7 @@ export class ReportController {
     @Query('endDate') end: string,
     @Query('minPrice') minPrice: number,
     @Query('maxPrice') maxPrice: number,
-  ): Promise<object> {
+  ): Promise<{ result: number }> {
     const startDate = start ? new Date(start) : undefined;
     const endDate = end ? new Date(end) : undefined;
     const result = await this.itemService.generateReport({
@@ -25,7 +28,7 @@ export class ReportController {
   }
 
   @Get('/deleted')
-  async searchDeleted(): Promise<object> {
+  async searchDeleted(): Promise<{ deletedItems: number }> {
     const result = await this.itemService.generateReport({
       deleted: true,
     });
@@ -38,7 +41,7 @@ export class ReportController {
     @Query('endDate') end: string,
     @Query('minPrice') minPrice: number,
     @Query('maxPrice') maxPrice: number,
-  ): Promise<object> {
+  ): Promise<{ activeItems: string }> {
     const startDate = start ? new Date(start) : undefined;
     const endDate = end ? new Date(end) : undefined;
     const result = await this.itemService.generateReport({
@@ -49,5 +52,10 @@ export class ReportController {
       maxPrice,
     });
     return { activeItems: `${result.toFixed(2)} %` };
+  }
+
+  @Get('/brand')
+  generateReportByBrand(): Promise<BrandReport[]> {
+    return this.itemService.generateReportByBrand();
   }
 }
