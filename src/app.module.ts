@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { ScheduleAPIService } from './app.service';
+import { AppService } from './app.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -24,6 +24,6 @@ import { PrivateItemModule } from './private/private.module';
     PrivateItemModule,
   ],
   controllers: [AppController],
-  providers: [ScheduleAPIService, ItemDtoPipe],
+  providers: [AppService, ItemDtoPipe],
 })
 export class AppModule {}

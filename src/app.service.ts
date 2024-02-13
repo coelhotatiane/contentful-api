@@ -9,17 +9,21 @@ import { ItemDtoPipe } from './pipes/item-dto.pipe';
 import { Item } from './entities/item.entity';
 
 @Injectable()
-export class ScheduleAPIService {
+export class AppService {
   constructor(
     private readonly httpService: HttpService,
     private readonly itemService: ItemService,
     private readonly itemDtoPipe: ItemDtoPipe,
   ) {}
-  private readonly logger = new Logger(ScheduleAPIService.name);
+  private readonly logger = new Logger(AppService.name);
 
   @Cron('0 0 * * * *')
   handleCron() {
     this.logger.debug('Called every hour');
+    this.populate();
+  }
+
+  populate() {
     this.getItems()
       .pipe(
         map((response) =>
@@ -39,7 +43,7 @@ export class ScheduleAPIService {
 
   getItems(): Observable<AxiosResponse<{ items: ItemDto[] }>> {
     const response = this.httpService.get(
-      'https://cdn.contentful.com/spaces/9xs1613l9f7v/environments/master/entries?access_token=I-ThsT55eE_B3sCUWEQyDT4VqVO3x__20ufuie9usns&content_type=product',
+      `https://cdn.contentful.com/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/${process.env.ENVIRONMENT}/entries?access_token=${process.env.CONTENTFUL_ACCESS_TOKEN}&content_type=${process.env.CONTENT_TYPE}`,
     );
     return response;
   }

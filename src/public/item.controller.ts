@@ -14,22 +14,22 @@ import { ItemDtoPipe } from 'src/pipes/item-dto.pipe';
 import { FindManyOptions, UpdateResult } from 'typeorm';
 import { FieldsDto } from 'src/dto/fields.dto';
 
-@Controller('public')
+@Controller('item')
 export class ItemController {
   constructor(private itemService: ItemService) {}
 
-  @Post('/item')
+  @Post()
   @UsePipes(new ItemDtoPipe())
   async createItem(@Body() item: Item) {
     return this.itemService.create(item);
   }
 
-  @Get('/item/:id')
+  @Get('/:id')
   getItem(@Param('id') id: string): Promise<Item> {
     return this.itemService.get(id);
   }
 
-  @Get('/item')
+  @Get('')
   search(
     @Query() query: FieldsDto & Pick<FindManyOptions, 'skip'>,
   ): Promise<Item[]> {
@@ -38,7 +38,7 @@ export class ItemController {
     return this.itemService.search(query, skip);
   }
 
-  @Delete('/item/:id')
+  @Delete('/:id')
   async deleteItem(
     @Param('id') id: string,
   ): Promise<Pick<UpdateResult, 'affected'>> {
